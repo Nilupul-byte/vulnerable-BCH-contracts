@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-002",
+  "type": "NOVEL_p2sh_address_reuse_commingling",
+  "severity": "High",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "8c10d5b0ab4d373124cdbcbe44b69d5e60b13da16349259ed52c9d0670bcc7d9",
+  "raw_tx": "02000000019d742c69d33df29cb76c97c9275c6e1605c156763ef622cb6d33d731829978bb000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a91442a3ff3dbd82817fe783ebbe8e6651d70e9695e288ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618767000000",
+  "regtest_block_height": 104,
+  "attempts": 1,
+  "exploit_explanation": "Because `AnyoneCanSpend()` has no constructor arguments, cashc always produces the same redeem script hash regardless of who deploys it. Two independent users, Alice and Bob, both send funds to the contract address. From the BCH chain's perspective both UTXOs are locked identically. If a future version of this contract attempted to add per-user logic (e.g., tracking the depositor's public key inside a CashToken NFT commitment), the address-reuse property means there is no on-chain way to distinguish Alice's UTXO from Bob's by address alone. A malicious third party could also deliberately send a tiny amount to the address to pollute the UTXO set and complicate off-chain accounting."
+}

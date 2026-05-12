@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-001",
+  "type": "ANYONE_CAN_SPEND",
+  "severity": "Critical",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "1afa93e14c87feb2c06af1cf515a9a48d67fbef5f75f89e97cc5d969bf597e14",
+  "raw_tx": "020000000146658839b7801d2441616a972a24af6954622c7e898b86fa512fb533c5dcfd42000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a9143bed00ccfc0afdcc4c739b2c65e8836681e7afc988ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618766000000",
+  "regtest_block_height": 103,
+  "attempts": 1,
+  "exploit_explanation": "Step 1: A legitimate user sends BCH (or CashTokens) to the P2SH(32) address derived from the compiled AnyoneCanSpend bytecode, creating a contract UTXO on the BCH chain. Step 2: An attacker (or miner) monitoring the mempool or any block explorer sees the funded UTXO and its sats value. Step 3: The attacker constructs a BCH transaction with one input referencing that UTXO. The unlocking script is simply the cashc function-selector dispatcher byte for either `redeem` (index 0) or `unlock` (index 1), followed by zero additional data items, since neither function declares any parameters. Step 4: BCHN evaluates the combined unlocking + locking script. The locking script resolves to OP_1 OP_VERIFY (from `require(true)`), which pushes the integer 1 onto the stack and verifies it — always passing. No signature verification opcode, no hash preimage check, and no introspection constraint is ever reached. Step 5: BCHN validates and relays the transaction. The attacker's output receives the full UTXO value minus whatever miner fee they set. Because no signature or secret is required, a miner can sweep the UTXO in the same block as the funding transaction, giving the original depositor zero blocks of opportunity to recover funds. Any CashTokens carried in the UTXO are equally unprotected and claimable in the same sweep transaction."
+}
