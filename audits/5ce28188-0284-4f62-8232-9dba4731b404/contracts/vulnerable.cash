@@ -1,0 +1,11 @@
+pragma cashscript ^0.10.0;
+
+contract AnyoneCanSpend() {
+    function redeem() {
+        require(true);
+    }
+
+    function unlock() {
+        require(true);
+    }
+}

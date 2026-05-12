@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-001",
+  "type": "ANYONE_CAN_SPEND",
+  "severity": "Critical",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "e7834a9e9c749fd8cef7bda27a861cc227ea88c8cb37fe6c6c497a6b416c75d0",
+  "raw_tx": "020000000107c1ae45acbe946942815ecbe2c4b7665c9cea17e8eab40297437a8f4b5790b6000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a914154a069620432380d3bf95b1e42587f070eadd1788ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618766000000",
+  "regtest_block_height": 103,
+  "attempts": 1,
+  "exploit_explanation": "An attacker constructs a transaction spending the contract UTXO by calling the vulnerable function with arbitrary (or empty) arguments. Because there are no script assertions, BCHN's script engine always returns true and accepts the spend. The attacker receives all funds locked at the contract address."
+}

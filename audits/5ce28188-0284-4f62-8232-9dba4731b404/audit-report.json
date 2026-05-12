@@ -1,0 +1,127 @@
+{
+  "job_id": "5ce28188-0284-4f62-8232-9dba4731b404",
+  "contract_files": [
+    {
+      "path": "contracts/safe.cash",
+      "source": "pragma cashscript ^0.10.0;\n\ncontract SafeP2PKH(bytes20 pkh) {\n    function spend(pubkey pk, sig s) {\n        require(hash160(pk) == pkh);\n        require(checkSig(s, pk));\n    }\n}\n",
+      "artifact": {
+        "contractName": "SafeP2PKH",
+        "constructorInputs": [
+          {
+            "name": "pkh",
+            "type": "bytes20"
+          }
+        ],
+        "abi": [
+          {
+            "name": "spend",
+            "inputs": [
+              {
+                "name": "pk",
+                "type": "pubkey"
+              },
+              {
+                "name": "s",
+                "type": "sig"
+              }
+            ]
+          }
+        ],
+        "bytecode": "OP_OVER OP_HASH160 OP_EQUALVERIFY OP_CHECKSIG",
+        "source": "pragma cashscript ^0.10.0;\n\ncontract SafeP2PKH(bytes20 pkh) {\n    function spend(pubkey pk, sig s) {\n        require(hash160(pk) == pkh);\n        require(checkSig(s, pk));\n    }\n}\n",
+        "debug": {
+          "bytecode": "5179a9517a8769517a517aac",
+          "sourceMap": "5:24:5:26;;:16::27:1;:31::34:0;;:16:::1;:8::36;6:25:6:26:0;;:28::30;;:16::31:1",
+          "logs": [],
+          "requires": [
+            {
+              "ip": 7,
+              "line": 5
+            },
+            {
+              "ip": 13,
+              "line": 6
+            }
+          ]
+        },
+        "compiler": {
+          "name": "cashc",
+          "version": "0.10.5"
+        },
+        "updatedAt": "2026-05-12T19:44:33.435Z"
+      }
+    },
+    {
+      "path": "contracts/vulnerable.cash",
+      "source": "pragma cashscript ^0.10.0;\n\ncontract AnyoneCanSpend() {\n    function redeem() {\n        require(true);\n    }\n\n    function unlock() {\n        require(true);\n    }\n}\n",
+      "artifact": {
+        "contractName": "AnyoneCanSpend",
+        "constructorInputs": [],
+        "abi": [
+          {
+            "name": "redeem",
+            "inputs": []
+          },
+          {
+            "name": "unlock",
+            "inputs": []
+          }
+        ],
+        "bytecode": "OP_DUP OP_0 OP_NUMEQUAL OP_IF OP_DROP OP_1 OP_ELSE OP_1 OP_NUMEQUALVERIFY OP_1 OP_ENDIF",
+        "source": "pragma cashscript ^0.10.0;\n\ncontract AnyoneCanSpend() {\n    function redeem() {\n        require(true);\n    }\n\n    function unlock() {\n        require(true);\n    }\n}\n",
+        "debug": {
+          "bytecode": "0079009c63517767007a519c695168",
+          "sourceMap": "4:4:6:5;;;;;5:16:5:20;4:4:6:5:1;;8::10::0;;;;;9:16:9:20;3:0:11:1:1",
+          "logs": [],
+          "requires": [
+            {
+              "ip": 6,
+              "line": 5
+            },
+            {
+              "ip": 14,
+              "line": 9
+            }
+          ]
+        },
+        "compiler": {
+          "name": "cashc",
+          "version": "0.10.5"
+        },
+        "updatedAt": "2026-05-12T19:44:33.436Z"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "FIND-001",
+      "type": "ANYONE_CAN_SPEND",
+      "severity": "Critical",
+      "title": "Anyone-Can-Spend Function",
+      "description": "One or more contract functions contain no require() statements. In CashScript, every spending condition must be enforced with require(). A function with no require() can be satisfied by any transaction input.",
+      "affected_lines": [
+        4,
+        8
+      ],
+      "contract_path": "contracts/vulnerable.cash",
+      "exploit_explanation": "An attacker constructs a transaction spending the contract UTXO by calling the vulnerable function with arbitrary (or empty) arguments. Because there are no script assertions, BCHN's script engine always returns true and accepts the spend. The attacker receives all funds locked at the contract address.",
+      "remediation": "Add at least one require() statement to every function. For ownership checks use require(checkSig(sig, ownerPk)). For data integrity use require(hash256(data) == expectedHash). Never leave a function body empty or with only comments.",
+      "poc_status": "confirmed",
+      "from_static_analysis": true,
+      "poc_result": {
+        "accepted": true,
+        "txid": "e7834a9e9c749fd8cef7bda27a861cc227ea88c8cb37fe6c6c497a6b416c75d0",
+        "raw_tx": "020000000107c1ae45acbe946942815ecbe2c4b7665c9cea17e8eab40297437a8f4b5790b6000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a914154a069620432380d3bf95b1e42587f070eadd1788ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618766000000",
+        "regtest_block_height": 103,
+        "attempts": 1
+      }
+    }
+  ],
+  "overall_risk": "Critical",
+  "executive_summary": "Automated executive summary unavailable. Overall risk: Critical. Total findings: 1 (Critical: 1, High: 0, Medium: 0, Low: 0). 1 finding(s) were verified with a working PoC exploit in regtest.",
+  "generated_at": "2026-05-12T19:45:20.490Z",
+  "critical_finding_count": 1,
+  "total_finding_count": 1,
+  "generated_by": "bch-audit-agent",
+  "schema_version": "1.0"
+}
