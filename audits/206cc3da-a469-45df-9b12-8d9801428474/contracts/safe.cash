@@ -1,0 +1,8 @@
+pragma cashscript ^0.10.0;
+
+contract SafeP2PKH(bytes20 pkh) {
+    function spend(pubkey pk, sig s) {
+        require(hash160(pk) == pkh);
+        require(checkSig(s, pk));
+    }
+}

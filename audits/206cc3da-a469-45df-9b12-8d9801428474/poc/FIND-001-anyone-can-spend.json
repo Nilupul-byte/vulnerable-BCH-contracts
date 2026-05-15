@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-001",
+  "type": "ANYONE_CAN_SPEND",
+  "severity": "Critical",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "c56420498ad38455696aa43b498bd44601f4a27fbd1bee8a94c571c26e220c18",
+  "raw_tx": "02000000016241c7bc93e659808adc82f61bed2e9d90d357eb0fb2c13b01015d4dacdab381000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a914001c43a218486689eb452d39035ccc959e6d564688ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618766000000",
+  "regtest_block_height": 103,
+  "attempts": 1,
+  "exploit_explanation": "Step 1: Attacker observes the P2SH(32) address derived from AnyoneCanSpend's compiled bytecode. Any deposit to this address creates a spendable UTXO. Step 2: Attacker constructs a transaction with that UTXO as an input. The unlocking script need only push the function selector for redeem() (selector index 0) — no signature or other witness data is required. Step 3: The spending transaction names any output the attacker controls. Step 4: The Script interpreter evaluates the locking script: the compiled bytecode dispatches to the redeem branch, executes OP_1 (require(true)), and the stack is clean. Step 5: The transaction is valid per consensus rules and is mined, transferring all BCH value (and any CashTokens) in the UTXO to the attacker. Mempool-level front-running means even if a legitimate party tries to spend first, an attacker can broadcast a competing transaction with a marginally higher fee-rate to win inclusion."
+}

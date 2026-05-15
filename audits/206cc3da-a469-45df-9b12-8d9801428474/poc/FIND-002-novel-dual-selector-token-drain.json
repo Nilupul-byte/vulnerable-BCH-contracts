@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-002",
+  "type": "NOVEL_dual_selector_token_drain",
+  "severity": "Critical",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "5ad96a489c3eb6179fcb7ba874e944b4cd41dbf965b9817da38b92a0f015d0c7",
+  "raw_tx": "0200000001d1f32c75557d6ed135b4e5efaaa22b81a07cfa51b0e2ce381f122ba88396df51000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a914b7c855b39e6d659a6bd2fc57c796f677cf51602988ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618766000000",
+  "regtest_block_height": 103,
+  "attempts": 1,
+  "exploit_explanation": "Step 1: A token issuer, perhaps inadvertently, sends a minting-capability NFT (tokenCategory = some 32-byte genesis txid + 0x02) to the AnyoneCanSpend P2SH address as part of a setup transaction. Step 2: Attacker observes the UTXO on-chain, notes the token category and capability byte 0x02 (minting). Step 3: Attacker constructs a spending transaction selecting either selector 0 or 1. The unlocking script is minimal — just the selector push. Step 4: The output of the attacker's transaction carries the minting NFT to an address the attacker controls. Step 5: Attacker can now mint arbitrary quantities of that token category, permanently compromising the token supply. Even without a minting NFT, fungible token balances or mutable NFTs are stolen in the same sweep."
+}
