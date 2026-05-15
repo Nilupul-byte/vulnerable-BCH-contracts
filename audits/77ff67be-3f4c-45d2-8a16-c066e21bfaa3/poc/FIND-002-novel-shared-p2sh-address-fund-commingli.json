@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-002",
+  "type": "NOVEL_shared_p2sh_address_fund_commingling",
+  "severity": "High",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "f38d1413cdce0906deb43ede7cd578ae85215b9c3ec5f3744c0e904bc1bcf587",
+  "raw_tx": "02000000016061e221a758273eb581401f04a8b8a7f8b738784742939b57537f2f381d7a43000000000d000b76009c63755167519d5168feffffff0218beeb0b000000001976a914662847e02dc115495087c7485cbbfe95f153563788ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618768000000",
+  "regtest_block_height": 105,
+  "attempts": 2,
+  "exploit_explanation": "1. Alice deploys AnyoneCanSpend() intending it as her personal vault and deposits 1 BCH. 2. Bob independently deploys AnyoneCanSpend() and deposits 2 BCH. Both deposits land at the identical P2SH address because the bytecode is identical. 3. Attacker constructs a single transaction with two inputs — one for Alice's UTXO and one for Bob's UTXO — both spending via the ANYONE_CAN_SPEND redeem() path. 4. A single sweep transaction drains 3 BCH. Even without the ANYONE_CAN_SPEND bug, if the contract were fixed to require a signature, Alice and Bob would both hold valid keys and could inadvertently (or maliciously) spend each other's UTXOs, since the contract cannot distinguish which depositor's UTXO is being spent."
+}

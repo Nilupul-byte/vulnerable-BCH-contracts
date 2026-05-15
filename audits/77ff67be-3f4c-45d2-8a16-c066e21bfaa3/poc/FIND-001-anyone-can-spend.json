@@ -1,0 +1,11 @@
+{
+  "finding_id": "FIND-001",
+  "type": "ANYONE_CAN_SPEND",
+  "severity": "Critical",
+  "contract_path": "contracts/vulnerable.cash",
+  "txid": "9a87402abc69dbe2cbdb0b4168433ecf4ce535e35a1b7801625d04ff327ebbb0",
+  "raw_tx": "02000000012521c65c574fec0c74279cbe6d5f9f57f69fd76bdb19900e527f4aaeb44ee102000000000d000b76009c63755167519d5168feffffff02b8820100000000001976a9147af7435193de85da376b313e66e0ab0b4443910e88ac5a0300000000000023aa20e396d0c4a522fbdce9190d8befab37b9ea8bc53150a9c584ae862ca3cb5f79618766000000",
+  "regtest_block_height": 103,
+  "attempts": 1,
+  "exploit_explanation": "1. Attacker observes the compiled P2SH address for AnyoneCanSpend on-chain (or can precompute it from the public bytecode since constructor args are empty). 2. Any party deposits BCH to this address — the UTXO appears in the mempool or is confirmed. 3. Attacker crafts a spending transaction: the unlocking script supplies the function selector for redeem() and no other arguments. 4. The script evaluates require(true) which is always satisfied. 5. The transaction is valid and miners will include it. Any miner or full-node relay participant can front-run the sweep. Because BCH UTXOs are publicly visible and the P2SH redeem script is revealed on first spend, even if the legitimate owner tries to sweep first, a miner can replace the output destination with their own address in the same block. There are no constructor arguments, so every deployment of this contract shares the identical P2SH address — funds from unrelated parties co-mingle and any one attacker can sweep the entire balance."
+}
